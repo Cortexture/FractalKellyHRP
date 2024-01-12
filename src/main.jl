@@ -11,8 +11,9 @@ df_amd = CSV.read("../data/AMD.csv", DataFrame;
     :Open = parse.(Float64, :Open),
     :Close = parse.(Float64, :Close))
 @subset!(df_amd, :Open .> 0)
-@select!(df_amd, :Date = :date, :return_amd = :Close ./ :Open)
+@select!(df_amd, :Date, :return_amd = :Close ./ :Open)
 
+#=
 df_coke = CSV.read("../data/COKE.csv", DataFrame;
     normalizenames  = true,
     ignoreemptyrows = true,
@@ -24,7 +25,7 @@ df_coke = CSV.read("../data/COKE.csv", DataFrame;
     :Open = parse.(Float64, :Open),
     :Close = parse.(Float64, :Close))
 @subset!(df_coke, :Open .> 0)
-@select!(df_coke, :Date = :date, :return_coke = :Close ./ :Open)
+@select!(df_coke, :Date, :return_coke = :Close ./ :Open)
 
 df_nvda = CSV.read("../data/NVDA.csv", DataFrame;
     normalizenames  = true,
@@ -37,7 +38,7 @@ df_nvda = CSV.read("../data/NVDA.csv", DataFrame;
     :Open = parse.(Float64, :Open),
     :Close = parse.(Float64, :Close))
 @subset!(df_nvda, :Open .> 0)
-@select!(df_nvda, :Date = :date, :return_nvda = :Close ./ :Open)
+@select!(df_nvda, :Date, :return_nvda = :Close ./ :Open)
 
 df_tsla = CSV.read("../data/TSLA.csv", DataFrame;
     normalizenames  = true,
@@ -50,7 +51,7 @@ df_tsla = CSV.read("../data/TSLA.csv", DataFrame;
     :Open = parse.(Float64, :Open),
     :Close = parse.(Float64, :Close))
 @subset!(df_tsla, :Open .> 0)
-@select!(df_tsla, :Date = :date, :return_tsla = :Close ./ :Open)
+@select!(df_tsla, :Date, :return_tsla = :Close ./ :Open)
 
 df_wmt = CSV.read("../data/WMT.csv", DataFrame;
     normalizenames  = true,
@@ -63,5 +64,5 @@ df_wmt = CSV.read("../data/WMT.csv", DataFrame;
     :Open = parse.(Float64, :Open),
     :Close = parse.(Float64, :Close))
 @subset!(df_wmt, :Open .> 0)
-@select!(df_wmt, :Date = :date, :return_wmt = :Close ./ :Open)
-
+@select!(df_wmt, :Date, :return_wmt = :Close ./ :Open)
+=#
