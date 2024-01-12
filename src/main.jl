@@ -1,5 +1,25 @@
 using CSV, DataFrames, DataFramesMeta, Dates
 
+function load_dataframe()
+    cd("~/git/FractalKellyHRP/data/")
+    files = readdir()
+    for file ∈ files
+        df_stock = CSV.read(file, DataFrame;
+            normalizenames  = true,
+            ignoreemptyrows = true,
+            types = String)
+
+        @select!(df_stock, :Date, :Open, :Close)
+        @transform!(df_stock, 
+            :Date = parse.(Date, :Date),
+            :Open = parse.(Float64, :Open),
+            :Close = parse.(Float64, :Close))
+        @subset!(df_stock, :Open .> 0)
+        @select!(df_stock, :Date, :return_amd = :Close ./ :Open)
+    end
+end
+
+#=
 df_amd = CSV.read("../data/AMD.csv", DataFrame;
     normalizenames  = true,
     ignoreemptyrows = true,
@@ -13,7 +33,6 @@ df_amd = CSV.read("../data/AMD.csv", DataFrame;
 @subset!(df_amd, :Open .> 0)
 @select!(df_amd, :Date, :return_amd = :Close ./ :Open)
 
-#=
 df_coke = CSV.read("../data/COKE.csv", DataFrame;
     normalizenames  = true,
     ignoreemptyrows = true,
