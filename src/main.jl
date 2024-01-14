@@ -1,23 +1,31 @@
+using Pipe: @pipe
 using CSV, DataFrames, DataFramesMeta, Dates
 
 function load_dataframe()
-    cd("~/git/FractalKellyHRP/data/")
-    files = readdir()
-    for file ∈ files
-        df_stock = CSV.read(file, DataFrame;
+    cd("../data/")
+    names = @pipe readdir() .|> chop(_, tail = 4) .|> lowercase
+    files = readdir(join = true)
+    dataframe_carrier = Vector{DataFrame}()
+    for i in eachindex(files)
+        df_stock = CSV.read(files[i], DataFrame;
             normalizenames  = true,
             ignoreemptyrows = true,
             types = String)
-
         @select!(df_stock, :Date, :Open, :Close)
         @transform!(df_stock, 
             :Date = parse.(Date, :Date),
             :Open = parse.(Float64, :Open),
             :Close = parse.(Float64, :Close))
         @subset!(df_stock, :Open .> 0)
-        @select!(df_stock, :Date, :return_amd = :Close ./ :Open)
+        @select!(df_stock, :Date, :Return = :Close ./ :Open)
+        name = names[i]
+        rename!(df_stock, :Date => "date", :Return => "return_$name")
+        push!(dataframe_carrier, df_stock)
     end
+    return dataframe_carrier
 end
+
+test = load_dataframe()
 
 #=
 df_amd = CSV.read("../data/AMD.csv", DataFrame;
