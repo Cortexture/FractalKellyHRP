@@ -1,5 +1,6 @@
 using Pipe: @pipe
 using CSV, DataFrames, DataFramesMeta, Dates
+using HypothesisTests
 
 function load_dataframe()
     cd("../data/")
@@ -22,11 +23,16 @@ function load_dataframe()
         rename!(stock, :Date => "date", :Return => "return_$name")
         push!(stocks, stock)
     end
-
     # Hardcoded this, need a better implementation
-    stocks_df = innerjoin(stocks[1], stocks[2], stocks[3], stocks[4], stocks[5];
+    stocks_df = innerjoin(stocks[1], stocks[2];
         on = :date, makeunique = true)
-
 end
 
-test = load_dataframe()
+returns_df = load_dataframe()
+
+amd = returns_df.return_amd
+blah = ADFTest(amd, :none, 0)
+println(blah.stat)
+println(blah.cv[2])
+println(blah.stat < blah.cv[2])
+
