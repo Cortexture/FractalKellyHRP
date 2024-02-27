@@ -54,23 +54,23 @@ end
 
 fraction = find_fraction(amd)
 
-function get_differences(vec, frac)
+function make_stationary(vec, frac)
     diff_vec = Vector{Float64}()
     push!(diff_vec, 0.0)
     for i ∈ 2:length(vec)
         push!(diff_vec, vec[i]*frac - vec[i-1])
     end
-    return diff_vec
+    return diff_vec .- mean(diff_vec)
 end
 
-println(first(amd, 10))
-println(mean(amd))
+stationary_amd = make_stationary(amd, 1)
 
-diff_amd = get_differences(amd, fraction) 
-stationary_amd = diff_amd .- mean(diff_amd)
-
-println(first(stationary_amd, 10))
+println(last(stationary_amd, 10))
 println(mean(stationary_amd))
+println(ADFTest(stationary_amd, :none, 1))
+println("jsfljsljf")
+println(ADFTest(amd .- mean(amd), :none, 1))
+
 
 #=blah = ADFTest(amd, :none, 0)
 println(blah.stat)
