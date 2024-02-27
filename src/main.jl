@@ -28,20 +28,12 @@ function load_dataframe()
     stocks_df = innerjoin(stocks[1], stocks[2];
         on = :date, makeunique = true)
 end
-
-returns_df = load_dataframe()
-
-amd = returns_df.return_amd
-
-# now need to get the fractional differences
-# amd[2]*fraction - amd[1] and so on and so on
-
 function find_fraction(vec)::Float64
     for i ∈ 1:-0.01:0
         diff_vec = Vector{Float64}()
         push!(diff_vec, 0)
         for j ∈ 2:length(vec)
-            push!(diff_vec, vec[j]*i - vec[j-1])
+            push!(diff_vec, vec[j] - vec[j-1]*i)
         end
         test_statistics = ADFTest(diff_vec, :none, 1)
         if test_statistics.stat < test_statistics.cv[2]
@@ -51,29 +43,24 @@ function find_fraction(vec)::Float64
         end
     end
 end
-
-fraction = find_fraction(amd)
-
 function make_stationary(vec, frac)
     diff_vec = Vector{Float64}()
     push!(diff_vec, 0.0)
     for i ∈ 2:length(vec)
-        push!(diff_vec, vec[i]*frac - vec[i-1])
+        push!(diff_vec, vec[i] - vec[i-1]*frac)
     end
-    return diff_vec .- mean(diff_vec)
+    return diff_vec 
 end
 
-stationary_amd = make_stationary(amd, 1)
+returns_df = load_dataframe()
+amd = returns_df.return_amd
+nvda = returns_df.return_nvda
 
-println(last(stationary_amd, 10))
-println(mean(stationary_amd))
-println(ADFTest(stationary_amd, :none, 1))
-println("jsfljsljf")
-println(ADFTest(amd .- mean(amd), :none, 1))
+demeaned_amd = amd .- mean(amd)
+demeaned_nvda = nvda .- mean(nvda)
 
+println(ADFTest(amd, :none, 0))
+println(ADFTest(demeaned_amd, :none, 0))
+println(ADFTest(nvda, :none, 0))
+println(ADFTest(demeaned_nvda, :none, 0))
 
-#=blah = ADFTest(amd, :none, 0)
-println(blah.stat)
-println(blah.cv[2])
-println(blah.stat < blah.cv[2])
-=#
